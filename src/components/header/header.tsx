@@ -1,6 +1,7 @@
 import { AppBar, Grid, Toolbar, Typography } from "@mui/material";
 import { useCallback } from "react";
 import TextButton from "../button/text-button";
+import TextHeader from "../text/text-content";
 
 const Header = ({}) => {
 
@@ -13,9 +14,7 @@ const Header = ({}) => {
 			<Toolbar>
 				<Grid container spacing={2} justifyContent={"space-between"}>
 					<Grid item>
-						<Typography variant="h5" component="div">
-							READING CLUB
-						</Typography>
+						<TextHeader headerSize="h4">READING CLUB</TextHeader>
 					</Grid>
 					<Grid item>
 						<TextButton
