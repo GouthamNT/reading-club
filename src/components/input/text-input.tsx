@@ -1,4 +1,4 @@
-import { FilledInput, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import React from "react";
 
 interface TextInputProps {
@@ -15,7 +15,7 @@ const TextInput = (props: TextInputProps) => {
 			{...props}
 			variant="filled"
 			fullWidth
-			placeholder={props.label}
+			label={props.label}
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 				if (props.onChange) {
 					return props.onChange(e.target.value);
