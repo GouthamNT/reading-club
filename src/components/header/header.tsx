@@ -1,4 +1,4 @@
-import { AppBar, Grid, Toolbar, Typography } from "@mui/material";
+import { AppBar, Grid, Toolbar } from "@mui/material";
 import { useCallback } from "react";
 import TextButton from "../button/text-button";
 import TextHeader from "../text/text-content";
@@ -10,7 +10,7 @@ const Header = ({}) => {
 	}, []);
 
 	return (
-		<AppBar>
+		<AppBar position="relative">
 			<Toolbar>
 				<Grid container spacing={2} justifyContent={"space-between"}>
 					<Grid item>
