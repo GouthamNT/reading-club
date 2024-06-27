@@ -23,9 +23,9 @@ const MultiSelect = (props: SelectProps) => {
 				}}
 				input={<FilledInput />}
 				renderValue={(selected: string) =>{
-					const selectedValues = selected as unknown as string[] | number[]
+					const selectedValues = new Set([...selected as unknown as string[] | number[]]);
 					return props.pickList
-						.filter((item) => new Set([...selectedValues]).has(item.key))
+						.filter((item) => selectedValues.has(item.key))
 						.map((item) => item.label)
 						.join(", ");
 				}}

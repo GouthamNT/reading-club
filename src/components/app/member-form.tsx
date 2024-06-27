@@ -1,12 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { BooksAPI } from "../../API/books-api";
-import { Book, MemberBook, PickList } from "../../common/modal";
+import { Book, Member, MemberBook, PickList } from "../../common/modal";
 import MultiSelect from "../input/select";
 import TextInput from "../input/text-input";
 import TextButton from "../button/text-button";
 import { MembersApi } from "../../API/members-api";
 
-const MemberForm = () => {
+interface MemberFormProps {
+	member?: Member;
+	memberBooks?: Array<MemberBook>;
+}
+
+const MemberForm = (props: MemberFormProps) => {
+
+	const [disableEmail, setDisableEmail] = useState<boolean>(false);
 	const [email, setEmail] = useState<string>("");
 
 	const [selectedBooks, setSelectedBooks] = useState<Array<Book>>([]);
@@ -31,7 +38,23 @@ const MemberForm = () => {
 			})
 			setMasterBooks([...books]);
 			setBooks([...bookPickList]);
-		})
+		});
+		if (props.member) {
+			setDisableEmail(true);
+		}
+		if (props.memberBooks) {
+			const selectedBooks = props.memberBooks.map((memberBook) => {
+				const {id, masterBookId, ...restOfMemberBook } = memberBook;
+
+				const book = {
+					...restOfMemberBook,
+					id: masterBookId
+				}
+
+				return book;
+			})
+			setSelectedBooks(selectedBooks);
+		}
 	}, [])
 
 	const onEmailChange = (value: string): void => {
@@ -46,6 +69,15 @@ const MemberForm = () => {
 	};
 
 	const save = async () => {
+
+		if (true) {
+			create();
+		} else {
+			updateBooks();
+		}
+	}
+
+	const create = async () => {
 		const createdMember = await membersAPI.createMember({ email, membershipStartDate: Date.now().toLocaleString() });
 		const memberBooks = selectedBooks.map((book) => {
 			const { id, ...restOfBook } = book;
@@ -59,13 +91,39 @@ const MemberForm = () => {
 		for (let i = 0; i < memberBooks.length; i++) {
 			await booksAPI.createMemberBook(createdMember.id as number, memberBooks[i])
 		}
+	}
 
+	const updateBooks = async () => {
+		const memberBooks = props.memberBooks || [];
+		const selectedBooksIds = new Set(selectedBooks.map((book) => book.id));
+		const memberBooksToDelete = memberBooks.filter((memberBook) => {
+			return !selectedBooksIds.has(memberBook.masterBookId);
+		}).map((memberBook) => memberBook.id as number);
+		const memberMasterBookIds = new Set(memberBooks.map((memberBook) => memberBook.masterBookId));
+		const memberBooksToAdd = selectedBooks.filter((book) => {
+			return !memberMasterBookIds.has(book.id as number)
+		}).map((book) => {
+			const { id, ...restOfBook } = book;
+			const memberBook: MemberBook = {
+				...restOfBook,
+				masterBookId: id as number ,
+				memberId: props.member?.id as number
+			}
+			return memberBook;
+		});
+		for (let i = 0; i < memberBooksToAdd.length; i++) {
+			await booksAPI.createMemberBook(props.member?.id as number, memberBooksToAdd[i]);
+		}
+
+		for (let i = 0; i < memberBooksToDelete.length; i++) {
+			await booksAPI.deleteMemberBook(memberBooksToDelete[i]);
+		}
 	}
 
 	return (
 		<>
 			<div>
-				<TextInput value={email} label="Email" onChange={onEmailChange} />
+				<TextInput disabled={disableEmail} value={email} label="Email" onChange={onEmailChange} />
 			</div>
 			<div>
 				<MultiSelect pickList={books} value={selectedPickListBooks} onChange={onBooksSelect}/>
