@@ -70,15 +70,20 @@ const MemberForm = (props: MemberFormProps) => {
 
 	const save = async () => {
 
-		if (true) {
-			create();
-		} else {
+		if (props.member?.id) {
 			updateBooks();
+		} else {
+			create();
 		}
 	}
 
 	const create = async () => {
-		const createdMember = await membersAPI.createMember({ email, membershipStartDate: Date.now().toLocaleString() });
+		const imgId = Math.floor(Math.random() * 1000) + 1;
+		const createdMember = await membersAPI.createMember({
+			email,
+			img: `https://picsum.photos/id/${imgId}/200`,
+			membershipStartDate: Date.now().toLocaleString(),
+		});
 		const memberBooks = selectedBooks.map((book) => {
 			const { id, ...restOfBook } = book;
 			const memberBook: MemberBook = {
@@ -126,7 +131,7 @@ const MemberForm = (props: MemberFormProps) => {
 				<TextInput disabled={disableEmail} value={email} label="Email" onChange={onEmailChange} />
 			</div>
 			<div>
-				<MultiSelect pickList={books} value={selectedPickListBooks} onChange={onBooksSelect}/>
+				<MultiSelect pickList={books} value={selectedPickListBooks} label="Books" onChange={onBooksSelect}/>
 			</div>
 			<div>
 				<TextButton label="save" onClick={save} />
