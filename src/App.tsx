@@ -5,7 +5,6 @@ import Main from './pages/main';
 
 function App() {
   return (
-		<ApplicationProviderContext>
 			<div className="App">
 				<div>
 					<Main />
@@ -14,7 +13,6 @@ function App() {
 					<Admin />
 				</div>
 			</div>
-		</ApplicationProviderContext>
 	);
 }
 

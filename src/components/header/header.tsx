@@ -1,17 +1,24 @@
 import { AppBar, Grid, Toolbar } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import TextButton from "../button/text-button";
 import TextHeader from "../text/text-content";
 import MemberDialog from "../app/dialog/member-pop-up";
 import { MemberProvider } from "../../context/member/member-provider";
+import { ApplicationContext } from "../../context/application/app-context";
 
 const Header = () => {
 
-	// const isLoggedIn
+	const { isLoggedIn, setLoggedIn } = useContext(ApplicationContext);
 	const [openDialog, setOpenDialog] = useState<boolean>(false);
 
 	const login = useCallback(() => {
-		sessionStorage.setItem("login", "admin");
+		localStorage.setItem("login", "admin");
+		setLoggedIn(true);
+	}, []);
+
+	const logout = useCallback(() => {
+		localStorage.removeItem("login");
+		setLoggedIn(false);
 	}, []);
 
 	const onClose = () => {
@@ -26,16 +33,21 @@ const Header = () => {
 						<TextHeader headerSize="h4">READING CLUB</TextHeader>
 					</Grid>
 					<Grid item>
-						<TextButton
+						{isLoggedIn && <TextButton
 							color="secondary"
 							label="Add Member"
 							onClick={() => setOpenDialog(true)}
-						/>
-						<TextButton
+						/>}
+
+						{isLoggedIn? <TextButton
 							color="secondary"
-							label="Login"
-							onClick={() => login()}
-						/>
+							label="Logout"
+							onClick={() => logout()}
+						/>: <TextButton
+						color="secondary"
+						label="Login"
+						onClick={() => login()}
+					/>}
 					</Grid>
 				</Grid>
 			</Toolbar>

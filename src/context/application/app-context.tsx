@@ -1,10 +1,12 @@
-import { createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 import { Book, Member, MemberBook } from "../../common/modal";
 
 export interface ApplicationContextState {
+	isLoggedIn: boolean;
 	members: Array<Member>;
 	memberBooks: Map<number, Array<MemberBook>>;
 	masterBooks: Array<Book>;
+	setLoggedIn: Dispatch<SetStateAction<boolean>>;
 	createMembers: (member: Member) => Promise<Member>;
 	getMembers: () => Promise<Array<Member>>;
 	getMasterBooks: () => Promise<Array<Book>>;

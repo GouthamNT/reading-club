@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useState } from "react";
+import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { ApplicationContext, ApplicationContextState } from "./app-context";
 import { Book, Member, MemberBook } from "../../common/modal";
 import { MembersApi } from "../../API/members-api";
@@ -14,11 +14,20 @@ const ApplicationProviderContext = ({
 	const membersApi = MembersApi.getInstance();
 	const booksApi = BooksAPI.getInstance();
 
+	const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
+
 	const [members, setMembers] = useState<Array<Member>>([]);
 	const [memberBooks, setMemberBooks] = useState<
 		Map<number, Array<MemberBook>>
 	>(new Map());
 	const [masterBooks, setMasterBooks] = useState<Array<Book>>([]);
+
+	useEffect(() => {
+		if (localStorage.getItem("login")) {
+			setLoggedIn(true);
+		}
+
+	}, [])
 
 	const createMembers = async (member: Member): Promise<Member> => {
 		const newMember = await membersApi.createMember(member);
@@ -105,9 +114,11 @@ const ApplicationProviderContext = ({
 	}
 
 	const context: ApplicationContextState = {
+		isLoggedIn,
 		members,
 		memberBooks,
 		masterBooks,
+		setLoggedIn,
 		createMembers,
 		getMembers,
 		deleteMember,
