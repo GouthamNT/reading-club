@@ -47,7 +47,7 @@ const ApplicationProviderContext = ({
 	};
 
 	const getMasterBooks = async (): Promise<Array<Book>> => {
-		if (masterBooks) {
+		if (masterBooks.length) {
 			return masterBooks;
 		}
 		const bookList = await booksApi.getMasterBooks();
