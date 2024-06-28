@@ -14,7 +14,7 @@ interface MemberDetailsMeta extends ImageGridData, Member {}
 
 const Main = () => {
 
-	const { members: memberList, getMembers, deleteMember, getMemberBooks } = useContext(ApplicationContext);
+	const { members: memberList, getMembers } = useContext(ApplicationContext);
 	const memberImageMeta = useMemo(() => {
 		const membersGridData = memberList.map((member) => {
 			const imageGridData: MemberDetailsMeta = {
@@ -25,6 +25,8 @@ const Main = () => {
 			};
 
 			return imageGridData;
+		}).sort((a, b) => {
+			return parseInt(a.membershipStartDate) - parseInt(b.membershipStartDate)
 		});
 		return membersGridData;
 	}, [memberList]);

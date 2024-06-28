@@ -1,11 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { BooksAPI } from "../../API/books-api";
 import { Book, Member, MemberBook, PickList } from "../../common/modal";
+import { validateEmail } from "../../common/utils";
+import { ApplicationContext } from "../../context/application/app-context";
+import { MemberContext } from "../../context/member/member-context";
 import MultiSelect from "../input/select";
 import TextInput from "../input/text-input";
-import TextButton from "../button/text-button";
-import { MembersApi } from "../../API/members-api";
-import { MemberContext } from "../../context/member/member-context";
 
 interface MemberFormProps {
 	member?: Member;
@@ -13,7 +12,6 @@ interface MemberFormProps {
 }
 
 const MemberForm = (props: MemberFormProps) => {
-
 	const {
 		name,
 		email,
@@ -23,7 +21,13 @@ const MemberForm = (props: MemberFormProps) => {
 		updateSelectedBooks,
 	} = useContext(MemberContext);
 
+	const { getMasterBooks } = useContext(ApplicationContext);
+
 	const [disableEmail, setDisableEmail] = useState<boolean>(false);
+
+	const [isNameError, setNameError] = useState<boolean>(false);
+	const [isEmailError, setEmailError] = useState<boolean>(false);
+	const [isBookError, setBookError] = useState<boolean>(false);
 
 	const [masterBooks, setMasterBooks] = useState<Array<Book>>([]);
 
@@ -31,23 +35,20 @@ const MemberForm = (props: MemberFormProps) => {
 
 	const selectedPickListBooks = useMemo(() => {
 		return selectedBooks.map((book) => book.id as number);
-	}, [selectedBooks])
+	}, [selectedBooks]);
 
-	const booksAPI = useMemo(() => BooksAPI.getInstance(), []);
-	const membersAPI = useMemo(() => MembersApi.getInstance(), []);
 	useEffect(() => {
-		booksAPI.getMasterBooks().then((books) => {
+		getMasterBooks().then((books) => {
 			const bookPickList = books.map((book) => {
 				return {
 					key: book.id as number,
-					label: book.name
-				}
-			})
+					label: book.name,
+				};
+			});
 			setMasterBooks([...books]);
 			setBooks([...bookPickList]);
 		});
-
-	}, [booksAPI])
+	}, []);
 
 	useEffect(() => {
 		if (props.member) {
@@ -57,46 +58,80 @@ const MemberForm = (props: MemberFormProps) => {
 		}
 		if (props.memberBooks) {
 			const selectedBooks = props.memberBooks.map((memberBook) => {
-				const {id, masterBookId, ...restOfMemberBook } = memberBook;
+				const { id, masterBookId, ...restOfMemberBook } = memberBook;
 
 				const book = {
 					...restOfMemberBook,
-					id: masterBookId
-				}
+					id: masterBookId,
+				};
 
 				return book;
-			})
+			});
 			updateSelectedBooks(selectedBooks);
 		}
-	}, [props.member, props.memberBooks])
+	}, [props.member, props.memberBooks]);
 
 	const onEmailChange = useCallback((value: string): void => {
-		updateEmail(value);
+		updateEmail(value.trim());
+		if (!value.trim() || !validateEmail(value.trim())) {
+			setEmailError(true);
+		} else {
+			setEmailError(false);
+		}
 	}, []);
 
 	const onNameChange = useCallback((value: string): void => {
-		updateName(value);
+		updateName(value.trim());
+		if (!value.trim()) {
+			setNameError(true);
+		} else {
+			setNameError(false);
+		}
 	}, []);
 
-
-	const onBooksSelect = useCallback((value: string[]): void => {
-		const selectedBooksIds = new Set(value.map((bookId) => Number(bookId)));
-		updateSelectedBooks(
-			masterBooks.filter((masterBook) => selectedBooksIds.has(masterBook.id as number))
-		);
-	}, [masterBooks]);
-
+	const onBooksSelect = useCallback(
+		(value: string[]): void => {
+			const selectedBooksIds = new Set(value.map((bookId) => Number(bookId)));
+			const updated = masterBooks.filter((masterBook) =>
+				selectedBooksIds.has(masterBook.id as number)
+			);
+			updateSelectedBooks(updated);
+			if (!updated.length) {
+				setBookError(true);
+			} else {
+				setBookError(false);
+			}
+		},
+		[masterBooks]
+	);
 
 	return (
 		<>
 			<div>
-				<TextInput value={name} label="Name" onChange={onNameChange} />
+				<TextInput
+					value={name}
+					label="Name"
+					onChange={onNameChange}
+					error={isNameError}
+				/>
 			</div>
 			<div>
-				<TextInput disabled={disableEmail} value={email} label="Email" onChange={onEmailChange} />
+				<TextInput
+					disabled={disableEmail}
+					value={email}
+					label="Email"
+					onChange={onEmailChange}
+					error={isEmailError}
+				/>
 			</div>
 			<div>
-				<MultiSelect pickList={books} value={selectedPickListBooks} label="Books" onChange={onBooksSelect}/>
+				<MultiSelect
+					pickList={books}
+					value={selectedPickListBooks}
+					label="Books"
+					onChange={onBooksSelect}
+					error={isBookError}
+				/>
 			</div>
 		</>
 	);

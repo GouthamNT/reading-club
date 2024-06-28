@@ -7,6 +7,7 @@ interface TextButtonProps {
 	color?: Color;
 	label: string;
 	onClick: (e: MouseEvent<HTMLElement>) => void;
+	disabled?: boolean;
 }
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
@@ -26,11 +27,21 @@ const TextButton = (props: TextButtonProps) => {
 	}, [props.color]);
 
 	return color === "secondary" ? (
-		<ColorButton variant="text" size="large" onClick={props.onClick}>
+		<ColorButton
+			variant="text"
+			size="large"
+			onClick={props.onClick}
+			disabled={props.disabled}
+		>
 			{props.label}
 		</ColorButton>
 	) : (
-		<Button variant="text" size="large" onClick={props.onClick}>
+		<Button
+			variant="text"
+			size="large"
+			onClick={props.onClick}
+			disabled={props.disabled}
+		>
 			{props.label}
 		</Button>
 	);

@@ -6,11 +6,12 @@ interface SelectProps {
 	label?: string;
 	onChange?: (value: string[]) => void;
 	pickList: PickList[];
+	error?: boolean;
 }
 
 const MultiSelect = (props: SelectProps) => {
 	return (
-		<FormControl fullWidth margin="normal">
+		<FormControl fullWidth margin="normal" error={props.error}>
 			<InputLabel>{props.label}</InputLabel>
 			<Select
 				multiple
