@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import TextButton from "../button/text-button";
 import TextHeader from "../text/text-content";
 
-const Header = ({}) => {
+const Header = () => {
 
 	const login = useCallback(() => {
 		sessionStorage.setItem("login", "admin");

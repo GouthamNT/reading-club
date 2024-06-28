@@ -1,5 +1,5 @@
 import './App.css';
-import MemberForm from './components/app/member-form';
+import Admin from './pages/admin';
 import Main from './pages/main';
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
       <Main />
       </div>
       <div>
-      <MemberForm />
+      <Admin />
       </div>
     </div>
   );

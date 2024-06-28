@@ -5,8 +5,9 @@ export interface PickList {
 
 export interface Member {
 	id?: number;
+	name: string;
 	email: string;
-	img?: string;
+	img: string;
 	membershipStartDate: string;
 }
 

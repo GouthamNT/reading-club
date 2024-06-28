@@ -24,4 +24,13 @@ export class MembersApi {
 		const createdMemberResponse = await this._axiosClient.post(this.RESOURCE_PATH, member);
 		return createdMemberResponse.data;
 	}
+
+	public async getMembers(): Promise<Array<Member>> {
+		const memberListResponse = await this._axiosClient.get(this.RESOURCE_PATH);
+		return memberListResponse.data;
+	}
+
+	public async deleteMember(memberId: number): Promise<void> {
+		await this._axiosClient.delete(`${this.RESOURCE_PATH}/${memberId}`);
+	}
 }

@@ -15,6 +15,7 @@ const TextInput = (props: TextInputProps) => {
 			{...props}
 			variant="filled"
 			fullWidth
+			margin="normal"
 			label={props.label}
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 				if (props.onChange) {

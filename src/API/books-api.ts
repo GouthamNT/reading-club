@@ -31,6 +31,11 @@ export class BooksAPI {
 		return bookResponse.data;
 	}
 
+	public async getMemberBooks(memberId:number): Promise<Array<MemberBook>> {
+		const bookResponse = await this._axiosClient.get(`/members/${memberId}/books`);
+		return bookResponse.data;
+	}
+
 	public async deleteMemberBook(memberBookId: number): Promise<void> {
 		await this._axiosClient.delete(`/books/${memberBookId}`);
 	}

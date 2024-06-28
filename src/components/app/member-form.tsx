@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BooksAPI } from "../../API/books-api";
 import { Book, Member, MemberBook, PickList } from "../../common/modal";
 import MultiSelect from "../input/select";
@@ -12,6 +12,8 @@ interface MemberFormProps {
 }
 
 const MemberForm = (props: MemberFormProps) => {
+
+	const [name, setName] = useState<string>("");
 
 	const [disableEmail, setDisableEmail] = useState<boolean>(false);
 	const [email, setEmail] = useState<string>("");
@@ -39,7 +41,13 @@ const MemberForm = (props: MemberFormProps) => {
 			setMasterBooks([...books]);
 			setBooks([...bookPickList]);
 		});
+
+	}, [booksAPI])
+
+	useEffect(() => {
 		if (props.member) {
+			setName(props.member.name);
+			setEmail(props.member.email);
 			setDisableEmail(true);
 		}
 		if (props.memberBooks) {
@@ -55,32 +63,29 @@ const MemberForm = (props: MemberFormProps) => {
 			})
 			setSelectedBooks(selectedBooks);
 		}
-	}, [])
+	}, [props.member, props.memberBooks])
 
-	const onEmailChange = (value: string): void => {
+	const onEmailChange = useCallback((value: string): void => {
 		setEmail(value);
-	};
+	}, []);
 
-	const onBooksSelect = (value: string[]): void => {
+	const onNameChange = useCallback((value: string): void => {
+		setName(value);
+	}, []);
+
+
+	const onBooksSelect = useCallback((value: string[]): void => {
 		const selectedBooksIds = new Set(value.map((bookId) => Number(bookId)));
 		setSelectedBooks(
 			masterBooks.filter((masterBook) => selectedBooksIds.has(masterBook.id as number))
 		);
-	};
+	}, [masterBooks]);
 
-	const save = async () => {
-
-		if (props.member?.id) {
-			updateBooks();
-		} else {
-			create();
-		}
-	}
-
-	const create = async () => {
+	const create = useCallback(async () => {
 		const imgId = Math.floor(Math.random() * 1000) + 1;
 		const createdMember = await membersAPI.createMember({
 			email,
+			name,
 			img: `https://picsum.photos/id/${imgId}/200`,
 			membershipStartDate: Date.now().toLocaleString(),
 		});
@@ -96,9 +101,9 @@ const MemberForm = (props: MemberFormProps) => {
 		for (let i = 0; i < memberBooks.length; i++) {
 			await booksAPI.createMemberBook(createdMember.id as number, memberBooks[i])
 		}
-	}
+	}, [email, name, selectedBooks, booksAPI, membersAPI])
 
-	const updateBooks = async () => {
+	const updateBooks = useCallback(async () => {
 		const memberBooks = props.memberBooks || [];
 		const selectedBooksIds = new Set(selectedBooks.map((book) => book.id));
 		const memberBooksToDelete = memberBooks.filter((memberBook) => {
@@ -123,10 +128,23 @@ const MemberForm = (props: MemberFormProps) => {
 		for (let i = 0; i < memberBooksToDelete.length; i++) {
 			await booksAPI.deleteMemberBook(memberBooksToDelete[i]);
 		}
-	}
+	}, [props.member, props.memberBooks, selectedBooks, booksAPI]);
+
+	const save = useCallback(async () => {
+
+		if (props.member?.id) {
+			updateBooks();
+		} else {
+			create();
+		}
+	}, [props.member, create, updateBooks])
+
 
 	return (
 		<>
+			<div>
+				<TextInput value={name} label="Name" onChange={onNameChange} />
+			</div>
 			<div>
 				<TextInput disabled={disableEmail} value={email} label="Email" onChange={onEmailChange} />
 			</div>

@@ -23,7 +23,7 @@ const TextButton = (props:TextButtonProps) => {
 			return props.color;
 		}
 		return 'primary';
-	}, []);
+	}, [props.color]);
 
 	return color === "secondary" ? (
 		<ColorButton variant="text" size="large" onClick={props.onClick}>
