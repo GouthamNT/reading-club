@@ -7,7 +7,7 @@ import {
 	ImageListItemBar,
 	Stack,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { BooksAPI } from "../API/books-api";
 import { MembersApi } from "../API/members-api";
 import { ImageGridData } from "../common/component-modal";
@@ -15,14 +15,15 @@ import { Member, MemberBook } from "../common/modal";
 import MemberDialog from "../components/app/dialog/member-pop-up";
 import AppIconButton from "../components/button/icon-button";
 import MemberImageGrid from "../components/image/image-grid";
+import ApplicationProviderContext from "../context/application/app-provider";
+import { ApplicationContext, ApplicationContextState } from "../context/application/app-context";
+import { MemberProvider } from "../context/member/member-provider";
 
 interface MemberDetailsMeta extends ImageGridData, Member {}
 
 const Admin = () => {
-	const membersAPI = MembersApi.getInstance();
-	const booksAPI = BooksAPI.getInstance();
 
-	const [memberList, setMemberList] = useState<Array<Member>>([]);
+	const { members: memberList, getMembers, deleteMember, getMemberBooks } = useContext(ApplicationContext)
 
 	const [selectedMember, setSelectedMember] = useState<Member>();
 	const [selectedMemberBooks, setSelectedMemberBooks] = useState<
@@ -45,23 +46,18 @@ const Admin = () => {
 	}, [memberList]);
 
 	useEffect(() => {
-		membersAPI.getMembers().then((members) => {
-			setMemberList(members);
-		});
+		getMembers()
 	}, []);
 
-	const deleteMember = (id: number) => {
-		membersAPI.deleteMember(id);
-		membersAPI.getMembers().then((members) => {
-			setMemberList(members);
-		});
+	const onDelete = (id: number) => {
+		deleteMember(id);
 	};
 
 	const editMember = async (id: number) => {
 		const member = memberList.find((member) => {
 			return member.id === id;
 		});
-		booksAPI.getMemberBooks(id).then((memberBooks) => {
+		getMemberBooks(id).then((memberBooks) => {
 			setSelectedMemberBooks([...memberBooks]);
 			setSelectedMember({ ...(member as Member) });
 			setOpenDialog(true);
@@ -93,19 +89,21 @@ const Admin = () => {
 									/>
 									<AppIconButton
 										icon={<DeleteForeverIcon />}
-										onClick={() => deleteMember(member.id as number)}
+										onClick={() => onDelete(member.id as number)}
 									/>
 								</Stack>
 							</ImageListItem>
 						</>
 					))}
 				</ImageList>
+				<MemberProvider>
 				<MemberDialog
 					open={openDialog}
 					onClose={() => setOpenDialog(false)}
 					member={selectedMember}
 					memberBooks={selectedMemberBooks}
 				/>
+				</MemberProvider>
 			</Container>
 		</>
 	);

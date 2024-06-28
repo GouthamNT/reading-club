@@ -25,6 +25,11 @@ export class MembersApi {
 		return createdMemberResponse.data;
 	}
 
+	public async updateMember(memberId: number, member: Member): Promise<Member> {
+		const updatedMemberResponse = await this._axiosClient.put(`${this.RESOURCE_PATH}/${memberId}`, member);
+		return updatedMemberResponse.data;
+	}
+
 	public async getMembers(): Promise<Array<Member>> {
 		const memberListResponse = await this._axiosClient.get(this.RESOURCE_PATH);
 		return memberListResponse.data;
