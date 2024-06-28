@@ -6,24 +6,24 @@ type Color = "primary" | "secondary";
 interface TextButtonProps {
 	color?: Color;
 	label: string;
-	onClick: (e:MouseEvent<HTMLElement>) => void;
+	onClick: (e: MouseEvent<HTMLElement>) => void;
 }
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
-	color: '#ffffff',
-	backgroundColor: 'none',
-	'&:hover': {
-	  color:'#d3d3d3',
+	color: "#ffffff",
+	backgroundColor: "none",
+	"&:hover": {
+		color: "#d3d3d3",
 	},
-  }));
+}));
 
-const TextButton = (props:TextButtonProps) => {
+const TextButton = (props: TextButtonProps) => {
 	const color: Color = useMemo(() => {
 		if (props.color) {
 			return props.color;
 		}
-		return 'primary';
-	}, []);
+		return "primary";
+	}, [props.color]);
 
 	return color === "secondary" ? (
 		<ColorButton variant="text" size="large" onClick={props.onClick}>
@@ -34,7 +34,6 @@ const TextButton = (props:TextButtonProps) => {
 			{props.label}
 		</Button>
 	);
-
-}
+};
 
 export default TextButton;

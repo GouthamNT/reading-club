@@ -1,0 +1,22 @@
+.animated-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.animated-list .MuiListItem-root {
+    position: relative;
+    animation: slideRightToLeft 1s ease-in-out forwards;
+}
+
+@keyframes slideRightToLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animated-list .MuiListItem-root:nth-child(1) {
+    animation-delay: 0s;
+}

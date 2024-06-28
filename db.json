@@ -1,0 +1,54 @@
+{
+  "members": [],
+  "books": [],
+  "master-books": [
+    {
+      "id": 1,
+      "name": "Alice in Wonder Land"
+    },
+    {
+      "id": 2,
+      "name": "Rich Dad and Poor Dad"
+    },
+    {
+      "id": 3,
+      "name": "The 5am club"
+    },
+    {
+      "id": 4,
+      "name": "Half Girlfriend"
+    },
+    {
+      "id": 5,
+      "name": "Cynderalla"
+    },
+    {
+      "id": 6,
+      "name": "King Bruce"
+    },
+    {
+      "id": 7,
+      "name": "Barrack Obama"
+    },
+    {
+      "id": 8,
+      "name": "Harry Potter and the chamber of secrets"
+    },
+    {
+      "id": 9,
+      "name": "Ponniyin Selvan"
+    },
+    {
+      "id": 10,
+      "name": "The Monk who sold his Ferrari"
+    },
+    {
+      "id": 11,
+      "name": "6 Thinking Hats"
+    },
+    {
+      "id": 12,
+      "name": "The Alchemist"
+    }
+  ]
+}
