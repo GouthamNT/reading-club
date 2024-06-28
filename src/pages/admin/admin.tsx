@@ -12,12 +12,13 @@ import {
 	Typography
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { Member, MemberBook } from "../common/modal";
-import MemberDialog from "../components/app/dialog/member-pop-up";
-import AppIconButton from "../components/button/icon-button";
-import Header from "../components/header/header";
-import { ApplicationContext } from "../context/application/app-context";
-import { MemberProvider } from "../context/member/member-provider";
+import { Member, MemberBook } from "../../common/modal";
+import MemberDialog from "../../components/app/dialog/member-pop-up";
+import AppIconButton from "../../components/button/icon-button";
+import Header from "../../components/header/header";
+import { ApplicationContext } from "../../context/application/app-context";
+import { MemberProvider } from "../../context/member/member-provider";
+import './admin.css'
 
 const Main = () => {
 	const { members, getMembers, deleteMember, getMemberBooks } =
@@ -49,9 +50,8 @@ const Main = () => {
 	};
 	return (
 		<>
-			<Header />
 			<Container maxWidth="md">
-				<List>
+				<List className="animated-list">
 					{members.map((member, index) => {
 						return (
 							<>

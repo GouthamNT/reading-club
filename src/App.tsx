@@ -1,11 +1,12 @@
 import './App.css';
-import ApplicationProviderContext from './context/application/app-provider';
-import Admin from './pages/admin';
-import Main from './pages/main';
+import Header from './components/header/header';
+import Main from './pages/admin/admin';
+import Admin from './pages/main/main';
 
 function App() {
   return (
 			<div className="App">
+        <Header />
 				<div>
 					<Main />
 				</div>

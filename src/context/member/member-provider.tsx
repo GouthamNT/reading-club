@@ -11,7 +11,7 @@ export const MemberProvider = ({ children }: MemberProviderProps) => {
 
 	const [state, dispatch] = useReducer(MemberReducer, initialState);
 
-	const { name, email, selectedBooks } = state
+	const { name, email, selectedBooks } = state;
 
 	const updateName = (name: string) => {
 		dispatch({ actionType: "updateName", payload: name});
