@@ -20,7 +20,7 @@ import { ApplicationContext } from "../../context/application/app-context";
 import { MemberProvider } from "../../context/member/member-provider";
 import './admin.css'
 
-const Main = () => {
+const Admin = () => {
 	const { members, getMembers, deleteMember, getMemberBooks } =
 		useContext(ApplicationContext);
 
@@ -103,4 +103,4 @@ const Main = () => {
 	);
 };
 
-export default Main;
+export default Admin;
