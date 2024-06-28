@@ -4,9 +4,8 @@ interface MemberState {
 	name: string;
 	email: string;
 	selectedBooks: Array<Book>;
+	disableSave: boolean;
 }
-
-type actionType = "updateName" | "updateEmail" | "updateSelectedBooks";
 
 type Action =
 	| {
@@ -20,15 +19,23 @@ type Action =
 	| {
 			actionType: "updateSelectedBooks";
 			payload: Array<Book>;
+	  }
+	| {
+			actionType: "updateDisableSave";
+			payload: boolean;
 	  };
 
 export const initialState: MemberState = {
 	name: "",
 	email: "",
-	selectedBooks: []
-}
+	selectedBooks: [],
+	disableSave: false,
+};
 
-const MemberReducer = (state: MemberState = initialState, action: Action): MemberState => {
+const MemberReducer = (
+	state: MemberState = initialState,
+	action: Action
+): MemberState => {
 	switch (action.actionType) {
 		case "updateName":
 			return {
@@ -44,6 +51,11 @@ const MemberReducer = (state: MemberState = initialState, action: Action): Membe
 			return {
 				...state,
 				selectedBooks: [...action.payload],
+			};
+		case "updateDisableSave":
+			return {
+				...state,
+				disableSave: action.payload,
 			};
 	}
 	return state;

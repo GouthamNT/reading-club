@@ -12,6 +12,7 @@ import { Member, MemberBook } from "../../../common/modal";
 import { MemberProvider } from "../../../context/member/member-provider";
 import { MemberContext } from "../../../context/member/member-context";
 import { ApplicationContext } from "../../../context/application/app-context";
+import { validateEmail } from "../../../common/utils";
 
 interface MemberDialogProps {
 	open: boolean;
@@ -58,7 +59,7 @@ const MemberDialog = (props: MemberDialogProps) => {
 			email,
 			name,
 			img: `https://picsum.photos/id/${imgId}/200`,
-			membershipStartDate: Date.now().toLocaleString(),
+			membershipStartDate: Date.now().toString(),
 		});
 		const memberBooks = selectedBooks.map((book) => {
 			const { id, ...restOfBook } = book;
@@ -113,7 +114,12 @@ const MemberDialog = (props: MemberDialogProps) => {
 			await create();
 			handleClose();
 		}
-	}, [props.member, create, updateBooks, setOpen])
+	}, [props.member, create, updateBooks, setOpen]);
+
+	const disableSave = () => {
+
+		return (!name || !email || !selectedBooks.length || !validateEmail(email))
+	}
 
 	return (
 		<Dialog maxWidth={"md"} open={open} onClose={handleClose}>
@@ -122,8 +128,8 @@ const MemberDialog = (props: MemberDialogProps) => {
 				<MemberForm member={props.member} memberBooks={props.memberBooks} />
 			</DialogContent>
 			<DialogActions>
-				<TextButton label="save" onClick={save} />
 				<TextButton label="close" onClick={handleClose} />
+				<TextButton label="save" onClick={save} disabled={disableSave()} />
 			</DialogActions>
 		</Dialog>
 	);
